@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Load the dataset with the correct delimiter
-file_path = "cardio_train.csv"  # Replace with your file path if different
+file_path = "cardio_train_with_features.csv"  # Replace with your file path if different
 df = pd.read_csv(file_path, sep=';')  # Specify the delimiter as ';'
 
 # Display available features
