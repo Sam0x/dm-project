@@ -18,10 +18,13 @@ def get_csv():
 
 def empty_values(df):
 
+    print("Number of missing values in each column:")
+    missing_values_per_column = df.isnull().sum()
+    print(missing_values_per_column)
+
     columns_to_drop = ['gender', 'cholesterol', 'gluc', 'smoke', 'alco','active','cardio']
     rows_without_all_data = df.isnull().any(axis=1).sum()
     print(f"Number of rows with empty values: {rows_without_all_data}")
-
     rows_without_all_data2 = df[columns_to_drop].isnull().any(axis=1).sum()
     print(f"Number of rows with empty categorical values: {rows_without_all_data2}")
     print(f"Number of rows with empty numerical values: {rows_without_all_data-rows_without_all_data2}")
@@ -59,7 +62,14 @@ def cat_outliers(df):
         else:
             print(f"No outliers detected in {column}.")   
 
-
+def range_number_columns(df):
+    columns_to_check = ['age', 'height', 'weight', 'ap_hi', 'ap_lo']
+    for column in columns_to_check:
+        if column in df.columns:
+            min_value = df[column].min()
+            max_value = df[column].max()
+            print(column,"range: [",min_value," - ",max_value,"]")
+    
 df = get_csv()
 print(df.shape)
 
@@ -72,3 +82,4 @@ df_full_rows = empty_values(df)
 print(df_full_rows.shape)
 number_outliers(df_full_rows)
 cat_outliers(df_full_rows)
+range_number_columns(df_full_rows)
