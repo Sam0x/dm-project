@@ -15,6 +15,7 @@ for column in categorical_columns:
         print(f"Category counts for '{column}':")
         print(df[column].value_counts())
 
+print(df.head)
 # Display available features
 print("Available features:")
 print(df.columns.tolist())

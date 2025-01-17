@@ -8,12 +8,14 @@ from scipy.stats import entropy
 from sklearn.metrics import mutual_info_score
 
 # Load the CSV file
-file_path = r'C:\Users\urban\Desktop\corrupted_cardio_train.csv'
-data = pd.read_csv(file_path)
+file_path = r'cardio_train_cleaned_with_features.csv'
+data = pd.read_csv(file_path, sep=';')
+
+
 
 # Display the first 15 rows and dataset info
-print(data.head(15))
-print(data.info())
+#print(data.head(15))
+#print(data.info())
 
 # Exclude the 'id' column if it exists
 columns_to_include = data.loc[:, data.columns != 'id']
@@ -34,22 +36,20 @@ extended_stats = pd.concat(
 
 # Display the extended statistics
 print(extended_stats)
-data['height_m'] = data['height'] / 100.0  # Convert height to meters
-data['age_y'] = data['age'] / 365.25  # Convert age from days to years
-data['BMI'] = data['weight'] / (data['height_m'] ** 2)  # Calculate Body Mass Index
-data['Pulse_Pressure'] = data['ap_hi'] - data['ap_lo']  # Calculate Pulse Pressure
-data['MAP'] = data['ap_lo'] + (data['Pulse_Pressure'] / 3)  # Calculate Mean Arterial Pressure
-data['Chol_Gluc_Ratio'] = data['cholesterol'] / data['gluc']  # Cholesterol/Glucose Ratio
-data['Lifestyle_Risk'] = data['smoke'] + data['alco'] + (1 - data['active'])  # Lifestyle Risk Score
-data['Systolic_Ratio'] = data['ap_hi'] / data['height']  # Systolic/Height Ratio
-data['Diastolic_Ratio'] = data['ap_lo'] / data['height']  # Diastolic/Height Ratio
-data['Hypertension'] = ((data['ap_hi'] > 140) | (data['ap_lo'] > 90)).astype(int)  # Hypertension Indicator
-data['Obesity'] = (data['BMI'] > 30).astype(int)  # Obesity Indicator
 print(data.head(15))
 
-target_column = 'cardio'  
-X = data.drop(columns=[target_column])
-y = data[target_column]
+target_column = 'cardio'
+
+# Debugging column names
+print("Columns in DataFrame:", data.columns)
+
+if target_column in data.columns:
+    X = data.drop(columns=[target_column])  # Drop the target column
+    y = data[target_column]  # Extract the target column
+    print("Shape of X (features):", X.shape)
+    print("Shape of y (target):", y.shape)
+else:
+    print(f"Target column '{target_column}' not found in the DataFrame!")
 
 # 1. Information Gain (Mutual Information)
 info_gain = mutual_info_classif(X, y, random_state=42)
@@ -62,6 +62,15 @@ def calculate_information_ratio(feature, target):
 
 info_ratio = [calculate_information_ratio(X[col], y) for col in X.columns]
 
+def range_number_columns(df):
+    columns_to_check = ['age', 'height', 'weight', 'ap_hi', 'ap_lo','BMI','Diastolic_Ratio','height_m','age_y','MAP','Pulse_Pressure','Systolic_Ratio']
+    for column in columns_to_check:
+        if column in df.columns:
+            min_value = df[column].min()
+            max_value = df[column].max()
+            print(column,"range: [",min_value," - ",max_value,"]")
+
+range_number_columns(data)
 # 3. Chi-Squared Test
 chi_scores, p_values = chi2(X, y)
 
@@ -96,3 +105,6 @@ normalized_metrics['Include'] = (normalized_metrics['Final Score'] >= threshold)
 
 # Display results
 print(normalized_metrics.sort_values(by='Final Score', ascending=False))
+sorted_normalized_metrics = normalized_metrics.sort_values(by='Final Score', ascending=False)
+output_path = "feature_selection.csv"
+sorted_normalized_metrics.to_csv(output_path, sep=';', index=False)

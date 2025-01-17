@@ -81,6 +81,13 @@ def check_and_filter_ranges(df):
     print(f"Number of rows after filtering out-of-range values: {df.shape[0]}")
     return df
 
+def remove_invalid_ap_values(df):    
+    # Remove rows where ap_lo is greater than ap_hi
+    df_cleaned = df[df['ap_lo'] <= df['ap_hi']]
+    
+    print(f"Number of rows after removal: {df_cleaned.shape[0]}")
+    return df_cleaned
+
 def cat_outliers(df):
     for column, expected in expected_categories.items():
         invalid_rows = df[~df[column].isin(expected)]  # Rows with invalid values
@@ -118,6 +125,7 @@ df_cleaned = number_outliers(df_cleaned)
 print(df_cleaned.shape)
 df_cleaned = cat_outliers(df_cleaned)
 print(df_cleaned.shape)
+df_cleaned = remove_invalid_ap_values(df_cleaned)
 range_number_columns(df_cleaned)
 
 output_path = "cardio_train_cleaned.csv"
