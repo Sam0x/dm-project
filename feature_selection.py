@@ -20,6 +20,7 @@ data = pd.read_csv(file_path, sep=';')
 # Exclude the 'id' column if it exists
 columns_to_include = data.loc[:, data.columns != 'id']
 
+
 # Calculate additional statistics
 additional_stats = {
     'Median': columns_to_include.median(numeric_only=True),  # Median
@@ -42,7 +43,7 @@ target_column = 'cardio'
 
 # Debugging column names
 print("Columns in DataFrame:", data.columns)
-
+data = data.drop(columns=['id'])
 if target_column in data.columns:
     X = data.drop(columns=[target_column])  # Drop the target column
     y = data[target_column]  # Extract the target column
@@ -107,4 +108,4 @@ normalized_metrics['Include'] = (normalized_metrics['Final Score'] >= threshold)
 print(normalized_metrics.sort_values(by='Final Score', ascending=False))
 sorted_normalized_metrics = normalized_metrics.sort_values(by='Final Score', ascending=False)
 output_path = "feature_selection.csv"
-sorted_normalized_metrics.to_csv(output_path, sep=';', index=False)
+sorted_normalized_metrics.to_csv(output_path, sep=';')
