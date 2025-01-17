@@ -3,8 +3,17 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Load the dataset with the correct delimiter
-file_path = "cardio_train_with_features.csv"  # Replace with your file path if different
+file_path = "cardio_train_cleaned_with_features.csv"  # Replace with your file path if different
 df = pd.read_csv(file_path, sep=';')  # Specify the delimiter as ';'
+
+#age, gedner, cholesterol, gluc, smoke, alco, active, cardio, Lifestyle_Risk, Hypertension, Obesity
+categorical_columns = [ 'gender', 'cholesterol', 'gluc', 'smoke', 
+                       'alco', 'active', 'cardio', 'Lifestyle_Risk', 
+                       'Hypertension', 'Obesity']
+for column in categorical_columns:
+    if column in df.columns:
+        print(f"Category counts for '{column}':")
+        print(df[column].value_counts())
 
 # Display available features
 print("Available features:")
@@ -50,3 +59,4 @@ if chosen_feature in df.columns:
         plt.show()
 else:
     print(f"Feature '{chosen_feature}' not found in the dataset. Please try again.")
+

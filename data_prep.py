@@ -12,7 +12,7 @@ expected_categories = {
     'cardio': [0, 1]
 }
 def get_csv():
-    file_path = r'C:\Users\TrpinM\OneDrive - Soudal N.V\Namizje\School\2Letnik\DM\project\corrupted_cardio_train.csv'
+    file_path = r'corrupted_cardio_train.csv'
     df = pd.read_csv(file_path)
     return df
 
@@ -42,16 +42,44 @@ def number_outliers(df):
     # Calculate Z-scores for numerical columns
     columns_to_check = ['age', 'height', 'weight', 'ap_hi', 'ap_lo']
 
+    df = check_and_filter_ranges(df)
+
     # Calculate Z-scores for the specified columns
     z_scores = df[columns_to_check].apply(zscore)
-    # Detect rows where any Z-score > 3
+    # Detect rows where any Z-score > 2.5
     outliers = (z_scores.abs() > 3)
 
     # Print rows with outliers
     print(df[outliers.any(axis=1)])
 
-    #todo ki nrdit z njimi
+    #removed outliers
+    df_cleaned = df[~outliers.any(axis=1)]
+    return df_cleaned
 
+def check_and_filter_ranges(df):
+    # Define ranges for each column
+    ranges = {
+        'height': (125, 200),  # Height in cm
+        'weight': (40, 300),  # Weight in kg
+        'ap_hi': (40, 400),   # Systolic blood pressure
+        'ap_lo': (30, 250)    # Diastolic blood pressure
+    }
+
+    for column, (min_val, max_val) in ranges.items():
+        if column in df.columns:
+            # Identify rows with out-of-range values
+            out_of_range = ~df[column].between(min_val, max_val)
+            if out_of_range.any():
+                print(f"Out-of-range values detected in '{column}':")
+                print(df[out_of_range])  # Print rows with out-of-range values
+            
+            # Remove rows with out-of-range values
+            df = df[~out_of_range]
+        else:
+            print(f"Column '{column}' not found in the DataFrame.")
+    
+    print(f"Number of rows after filtering out-of-range values: {df.shape[0]}")
+    return df
 
 def cat_outliers(df):
     for column, expected in expected_categories.items():
@@ -60,7 +88,13 @@ def cat_outliers(df):
             print(f"Row IDs with outliers in {column}:")
             print(invalid_rows['id'])
         else:
-            print(f"No outliers detected in {column}.")   
+            print(f"No outliers detected in {column}.")  
+        df_cleaned = df[df[column].isin(expected)]
+    return df_cleaned
+    
+         
+    
+    
 
 def range_number_columns(df):
     columns_to_check = ['age', 'height', 'weight', 'ap_hi', 'ap_lo']
@@ -73,13 +107,18 @@ def range_number_columns(df):
 df = get_csv()
 print(df.shape)
 
-df_full_rows = empty_values(df)
+df_cleaned = empty_values(df)
 #int: age, height,ap_hi,ap_lo
 #float: weight
 #categorical: gender, cholesterol, gluc 
 #binary: smoke, alco, active, cardio
 
-print(df_full_rows.shape)
-number_outliers(df_full_rows)
-cat_outliers(df_full_rows)
-range_number_columns(df_full_rows)
+print(df_cleaned.shape)
+df_cleaned = number_outliers(df_cleaned)
+print(df_cleaned.shape)
+df_cleaned = cat_outliers(df_cleaned)
+print(df_cleaned.shape)
+range_number_columns(df_cleaned)
+
+output_path = "cardio_train_cleaned.csv"
+df_cleaned.to_csv(output_path, sep=';', index=False)
