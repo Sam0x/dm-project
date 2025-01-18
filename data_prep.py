@@ -50,8 +50,11 @@ def number_outliers(df):
     outliers = (z_scores.abs() > 3)
 
     # Print rows with outliers
-    print(df[outliers.any(axis=1)])
+    #print(df[outliers.any(axis=1)])
+    num_outliers = outliers.any(axis=1).sum()
 
+    # Print the number of outliers removed
+    print(f"Number of outliers removed: {num_outliers}")
     #removed outliers
     df_cleaned = df[~outliers.any(axis=1)]
     return df_cleaned
@@ -69,9 +72,9 @@ def check_and_filter_ranges(df):
         if column in df.columns:
             # Identify rows with out-of-range values
             out_of_range = ~df[column].between(min_val, max_val)
-            if out_of_range.any():
-                print(f"Out-of-range values detected in '{column}':")
-                print(df[out_of_range])  # Print rows with out-of-range values
+            #if out_of_range.any():
+            #    print(f"Out-of-range values detected in '{column}':")
+            #    print(df[out_of_range])  # Print rows with out-of-range values
             
             # Remove rows with out-of-range values
             df = df[~out_of_range]
@@ -120,13 +123,13 @@ df_cleaned = empty_values(df)
 #categorical: gender, cholesterol, gluc 
 #binary: smoke, alco, active, cardio
 
-print(df_cleaned.shape)
+print('after empty values',df_cleaned.shape)
 df_cleaned = number_outliers(df_cleaned)
-print(df_cleaned.shape)
+print('after numbers outliers', df_cleaned.shape)
 df_cleaned = cat_outliers(df_cleaned)
-print(df_cleaned.shape)
+print('after cat outliers', df_cleaned.shape)
 df_cleaned = remove_invalid_ap_values(df_cleaned)
 range_number_columns(df_cleaned)
-
+print('after range for numbers', df_cleaned.shape)
 output_path = "cardio_train_cleaned.csv"
 df_cleaned.to_csv(output_path, sep=';', index=False)
