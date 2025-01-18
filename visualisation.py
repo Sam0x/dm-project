@@ -59,5 +59,15 @@ if chosen_feature in df.columns:
         plt.xticks(rotation=45)
         plt.show()
 else:
+    columns_to_check = ['age', 'height', 'weight', 'ap_hi', 'ap_lo','BMI','Diastolic_Ratio','height_m','age_y','MAP','Pulse_Pressure','Systolic_Ratio']
+    # Filter the DataFrame to include only the specified columns
+    filtered_df = df[columns_to_check]
+
+    # Compute the correlation matrix
+    correlation_matrix = filtered_df.corr()
+    plt.figure(figsize=(12, 8))
+    sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", cbar=True)
+    plt.title("Correlation Matrix")
+    plt.show()
     print(f"Feature '{chosen_feature}' not found in the dataset. Please try again.")
 
