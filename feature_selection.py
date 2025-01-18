@@ -9,9 +9,10 @@ from sklearn.metrics import mutual_info_score
 
 # Load the CSV file
 file_path = r'cardio_train_cleaned_with_features.csv'
-data = pd.read_csv(file_path, sep=';')
+data_og = pd.read_csv(file_path, sep=';')
 
-
+columns_to_remove = ['gender' ,'Obesity', 'Lifestyle_Risk', 'active', 'alco', 'smoke', 'gluc', 'cholesterol']  # Replace with actual column names
+data = data_og.drop(columns=columns_to_remove, errors='ignore')
 
 # Display the first 15 rows and dataset info
 #print(data.head(15))
@@ -19,7 +20,6 @@ data = pd.read_csv(file_path, sep=';')
 
 # Exclude the 'id' column if it exists
 columns_to_include = data.loc[:, data.columns != 'id']
-
 
 # Calculate additional statistics
 additional_stats = {
