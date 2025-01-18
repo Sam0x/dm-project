@@ -101,7 +101,7 @@ normalized_metrics['Random Forest Importance'] = scaler.fit_transform(
 normalized_metrics['Final Score'] = normalized_metrics[['Combined Score', 'Random Forest Importance']].mean(axis=1)
 
 # Assign Inclusion (0 or 1) based on a threshold
-threshold = 0.5  # Adjust threshold as needed
+threshold = 0.35  # Adjust threshold as needed
 normalized_metrics['Include'] = (normalized_metrics['Final Score'] >= threshold).astype(int)
 
 # Display results
@@ -109,3 +109,8 @@ print(normalized_metrics.sort_values(by='Final Score', ascending=False))
 sorted_normalized_metrics = normalized_metrics.sort_values(by='Final Score', ascending=False)
 output_path = "feature_selection.csv"
 sorted_normalized_metrics.to_csv(output_path, sep=';')
+
+excluded_features = sorted_normalized_metrics[sorted_normalized_metrics['Include'] == 0]
+filtered_data = data.drop(columns=excluded_features, errors='ignore')
+output_path = "selected_features_data.csv"
+filtered_data.to_csv(output_path, sep=';')
