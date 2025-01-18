@@ -62,7 +62,7 @@ def logistic_regression_model(df, target_column, numerical_columns, categorical_
     }
 
     model = LogisticRegression()
-    random_search = RandomizedSearchCV(estimator=model,param_distributions=param_distributions, n_iter=50, cv=5, verbose=2, random_state=42, n_jobs=-1)
+    random_search = RandomizedSearchCV(estimator=model,param_distributions=param_distributions, n_iter=50, cv=5, verbose=2, scoring='accuracy',random_state=42, n_jobs=-1)
     
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
@@ -101,7 +101,7 @@ def random_forest_model(df, target_column, numerical_columns, categorical_column
         'min_samples_split': np.arange(1,40)
     }
     model = RandomForestClassifier()
-    random_search = RandomizedSearchCV(estimator=model, param_distributions=param_distributions, n_iter=50, cv=5, verbose=2, random_state=42, n_jobs=-1)
+    random_search = RandomizedSearchCV(estimator=model, param_distributions=param_distributions, n_iter=50, cv=5, verbose=2, scoring='accuracy',random_state=42, n_jobs=-1)
     
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
@@ -124,7 +124,7 @@ def gradient_boosted_trees_model(df, target_column, numerical_columns, categoric
         'learning_rate': np.arange(0.1, 10.1, 1)  # 16 to 256 with a step of 16
     }
     model = GradientBoostingClassifier()
-    random_search = RandomizedSearchCV(estimator=model, param_distributions=param_distributions, n_iter=50, cv=5, verbose=2, random_state=42, n_jobs=-1)
+    random_search = RandomizedSearchCV(estimator=model, param_distributions=param_distributions, n_iter=50, cv=5, verbose=2, scoring='accuracy',random_state=42, n_jobs=-1)
     
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
@@ -146,7 +146,7 @@ def neural_network_model(df, target_column, numerical_columns, categorical_colum
     
     
     model = MLPClassifier()
-    random_search = RandomizedSearchCV(estimator=model, param_distributions=param_distributions, n_iter=50, cv=5, verbose=2, random_state=42, n_jobs=-1)
+    random_search = RandomizedSearchCV(estimator=model, param_distributions=param_distributions, n_iter=50, cv=5, verbose=2,scoring='accuracy', random_state=42, n_jobs=-1)
     
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
@@ -190,7 +190,7 @@ def knn_model(df, target_column, numerical_columns, categorical_columns):
     }
     
     model = KNeighborsClassifier()
-    random_search = RandomizedSearchCV(estimator=model, param_distributions=param_dist, n_iter=100, cv=8, verbose=2, random_state=42, n_jobs=-1)
+    random_search = RandomizedSearchCV(estimator=model, param_distributions=param_dist, n_iter=100, cv=8, verbose=2, scoring='accuracy', random_state=42, n_jobs=-1)
     
     
     # Split data into training and testing sets
