@@ -110,7 +110,7 @@ sorted_normalized_metrics = normalized_metrics.sort_values(by='Final Score', asc
 output_path = "feature_selection.csv"
 sorted_normalized_metrics.to_csv(output_path, sep=';')
 
-excluded_features = sorted_normalized_metrics[sorted_normalized_metrics['Include'] == 0]
-filtered_data = data.drop(columns=excluded_features, errors='ignore')
+excluded_features = ['age', 'weight', 'Diastolic_Ratio', 'ap_lo', 'Pulse_Pressure', 'Hypertension', 'height', 'height_m'] 
+filtered_data = data_og.drop(columns=excluded_features, errors='ignore')
 output_path = "selected_features_data.csv"
 filtered_data.to_csv(output_path, sep=';')
